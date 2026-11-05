@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="monetag" content="33c9bdf97d71b63295d1cb3670200b16">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#2a1b0d" id="tc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>পকেট গিটার</title>
+<style>
+:root,[data-theme=dark]{--bg:#17100a;--bar:#2a1b0d;--tx:#f3e3c3;--ac:#e39a35;--ac2:#9a5f14;--act:#1b1209;--bd:#3d2812;--lb:#4a2f16;--lbt:#e39a35;--p1:#5d4228;--p2:#3d2917;--ps:#1a0e05;--pt:#ffffffb0;--o1:#8a5420;--o2:#5f3a14;--sl:#e8e2d0;--card:#3d2a17;--msg:#00000040}
+[data-theme=light]{--bg:#f6efe0;--bar:#eadfc6;--tx:#2b1b0c;--ac:#c9700f;--ac2:#8f4a08;--act:#fff;--bd:#d8c29c;--lb:#c7a977;--lbt:#4a2f10;--p1:#fffaf0;--p2:#efe1c6;--ps:#b89b6a;--pt:#5a4630;--o1:#ffe2b3;--o2:#f3c47a;--sl:#8a7f68;--card:#fff8e8;--msg:#00000012}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;overflow:hidden;touch-action:none}
+#app{height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#bar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bar);min-height:66px;box-shadow:0 3px 12px #0005;z-index:2}
+#msg{flex:1;font-size:15px;line-height:1.3;background:var(--msg);border-radius:12px;padding:10px 14px;font-weight:600}
+button.t{background:linear-gradient(var(--ac),var(--ac2));color:var(--act);border:0;border-radius:14px;min-height:48px;min-width:52px;padding:12px 20px;font-weight:800;font-size:16px;box-shadow:0 4px 0 var(--ac2),0 6px 10px #0004}
+button.t:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ac2)}
+#board{flex:1;display:grid;gap:0;background:linear-gradient(var(--bd),var(--bd));margin:8px;padding:5px;border-radius:16px;box-shadow:inset 0 2px 10px #0006;overflow:hidden}
+.lb{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;margin:4px;border-radius:10px;background:var(--lb);color:var(--lbt);box-shadow:0 3px 0 #0004}
+.c{position:relative;margin:4px;border-radius:12px;background:linear-gradient(var(--p1),var(--p2));box-shadow:0 5px 0 var(--ps),0 7px 10px #0003;touch-action:none;overflow:hidden;transition:transform .05s}
+.c.n{background:linear-gradient(var(--o1),var(--o2))}
+.c::before{content:"";position:absolute;left:8px;right:8px;top:50%;height:var(--w);border-radius:3px;background:var(--sl);opacity:.55;transform:translateY(-50%)}
+.c.m::after{content:"";position:absolute;right:8px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--ac);opacity:.8}
+.c span{position:absolute;left:8px;top:5px;font-size:12px;font-weight:700;color:var(--pt)}
+.c.on{background:linear-gradient(#ffe08f,#f0a93a);transform:translateY(4px);box-shadow:0 1px 0 var(--ps)}
+.c.on span{color:#3a2200}
+.c.tg{background:linear-gradient(#7af08a,#2fc24a);box-shadow:0 5px 0 #1d7a2e,0 0 14px #4cd964}
+.c.tg span{color:#06300f}
+.c.nx{box-shadow:0 5px 0 var(--ps),0 0 0 3px #ffd60a inset}
+.c.ok{background:linear-gradient(#7af08a,#2fc24a);transform:translateY(4px)}
+.c.bad{background:linear-gradient(#ff8a80,#e0392d);transform:translateY(4px)}
+#menu,#dlg{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:9;padding:12px}
+.box{background:var(--bar);color:var(--tx);border-radius:18px;padding:16px;max-width:480px;width:100%;max-height:94dvh;overflow:auto;touch-action:pan-y;box-shadow:0 10px 30px #0008}
+.box h3{margin:0 0 10px;font-size:19px}
+.st{display:block;width:100%;text-align:left;margin:7px 0;padding:14px;border-radius:12px;border:0;background:var(--card);color:var(--tx);font-size:16px;font-weight:600;box-shadow:0 3px 0 #0003}
+.st:active{transform:translateY(2px)}
+.st.lock{opacity:.45}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+input{width:100%;padding:11px;border-radius:10px;border:0;margin-top:6px;background:#fff;color:#000}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar"><div id="msg"></div><button class="t" id="sb" style="display:none">⏹</button><button class="t" id="tb">🌙</button><button class="t" id="mb">☰ মেনু</button></div>
+  <div id="board"></div>
+</div>
+<div id="menu"><div class="box"><h3>🎸 মেনু</h3>
+  <button class="st" id="free">ফ্রি প্লে (যা খুশি বাজান)</button>
+  <div id="stl"></div>
+  <button class="st" id="song">🎵 গান আপলোড করে সুর শিখুন</button>
+  <button class="st" id="inst" style="display:none">📲 ফোনে ইনস্টল করুন</button>
+  <button class="st" id="cfg">⚙️ প্রগ্রেস সিঙ্ক (Apps Script)</button>
+  <div class="row"><button class="t" id="mc">বন্ধ করুন</button></div>
+  <p style="font-size:12px;opacity:.7">সবচেয়ে ওপরের সারি = সরু (১ম) তার। ফোন আড়াআড়ি ধরুন। iPhone-এ ইনস্টল: Share → Add to Home Screen।</p>
+</div></div>
+<div id="dlg"><div class="box" id="db"></div></div>
+
+<script>
+// ================= সেটিংস =================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3hnHYJg5aQm9c0uXlxKWKT8LCTjBlvB012eOkZ5-sgeymjtlm3QS9_5et5m2EHVg1/exec";            // Apps Script Web App URL (ঐচ্ছিক)
+const USE = [0,1,2,3,4];          // ৫ তার (e,B,G,D,A)। ৬ তার চাইলে [0,1,2,3,4,5] লিখুন
+const COLS = 9;                   // ফ্রেট ঘর: ০ (খোলা) থেকে ৮
+const MASTER_GAIN = 2.6;          // সাউন্ড আরও লাউড করতে বাড়ান
+
+// ================= গিটার ডেটা =================
+const ALLM=[64,59,55,50,45,40], ALLS=['e','B','G','D','A','E'];
+const M=USE.map(i=>ALLM[i]), S=USE.map(i=>ALLS[i]), ROWS=USE.length;
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const LOW=Math.min(...M), HIGH=Math.max(...M)+COLS-1;
+const nm=(r,f)=>NN[(M[r]+f)%12], fq=(r,f)=>440*Math.pow(2,(M[r]+f-69)/12);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[<>&"]/g,'');
+
+// ================= সাউন্ড (Karplus-Strong) =================
+let ctx,master,cache={},voice=[];
+function initAudio(){
+  if(ctx){ if(ctx.state!=='running')ctx.resume(); return; }
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const body=ctx.createBiquadFilter(); body.type='peaking'; body.frequency.value=220; body.gain.value=5;
+  const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-12; comp.ratio.value=6;
+  master=ctx.createGain(); master.gain.value=MASTER_GAIN;
+  body.connect(master); master.connect(comp); comp.connect(ctx.destination);
+  master.in=body; ctx.resume();
+}
+function synth(f){
+  const sr=ctx.sampleRate, len=(sr*2.6)|0, N=Math.round(sr/f), buf=ctx.createBuffer(1,len,sr), d=buf.getChannelData(0);
+  let p=0; for(let i=0;i<N;i++){ const x=Math.random()*2-1; d[i]=(x+p)/2; p=x; }
+  for(let i=N;i<len;i++) d[i]=(d[i-N]+d[i-N+1])*0.4985;
+  let m=0; for(let i=0;i<len;i++) m=Math.max(m,Math.abs(d[i]));
+  const fade=(sr*.15)|0; for(let i=0;i<len;i++) d[i]=d[i]/m*(i>len-fade?(len-i)/fade:1);
+  return buf;
+}
+function pluck(r,f){
+  initAudio(); const k=r+'_'+f; if(!cache[k]) cache[k]=synth(fq(r,f));
+  const t=ctx.currentTime;
+  if(voice[r]){ voice[r].g.gain.setTargetAtTime(0,t,.03); try{voice[r].s.stop(t+.2);}catch(e){} }
+  const s=ctx.createBufferSource(), g=ctx.createGain(); s.buffer=cache[k];
+  s.connect(g); g.connect(master.in); s.start(t); voice[r]={s,g};
+}
+
+// ================= বোর্ড =================
+const board=$('board'), cells={};
+board.style.gridTemplateColumns='28px repeat('+COLS+',1fr)';
+board.style.gridTemplateRows='repeat('+ROWS+',1fr)';
+for(let r=0;r<ROWS;r++){
+  const l=document.createElement('div'); l.className='lb'; l.textContent=S[r]; board.appendChild(l);
+  for(let f=0;f<COLS;f++){
+    const c=document.createElement('div'); c.className='c'+(f===0?' n':'')+([3,5,7].includes(f)?' m':'');
+    c.style.setProperty('--w',(1+r*.8)+'px'); c.innerHTML='<span>'+nm(r,f)+'</span>'; cells[r+'_'+f]=c;
+    c.addEventListener('pointerdown',e=>{e.preventDefault(); hit(r,f);});
+    board.appendChild(c);
+  }
+}
+board.addEventListener('contextmenu',e=>e.preventDefault());
+function flash(c,cls,ms=160){ c.classList.add(cls); setTimeout(()=>c.classList.remove(cls),ms); }
+
+// ================= প্রগ্রেস =================
+const uid=localStorage.getItem('gid')||(()=>{const i='u'+Math.random().toString(36).slice(2,9);localStorage.setItem('gid',i);return i;})();
+let P=JSON.parse(localStorage.getItem('gp')||'{"unlocked":0}');
+let url=localStorage.getItem('gurl')||SCRIPT_URL;
+function save(){ localStorage.setItem('gp',JSON.stringify(P));
+  if(url) fetch(url,{method:'POST',mode:'no-cors',body:JSON.stringify({id:uid,unlocked:P.unlocked})}).catch(()=>{}); }
+function load(){ if(!url)return; fetch(url+'?id='+uid).then(r=>r.json()).then(j=>{
+  if(j&&j.unlocked>P.unlocked){P.unlocked=j.unlocked;localStorage.setItem('gp',JSON.stringify(P));drawMenu();} }).catch(()=>{}); }
+
+// ================= টিউটোরিয়াল ধাপ =================
+// p = [[সারি, ফ্রেট], ...]  সারি ০ = সবচেয়ে সরু তার (e), ১ = B, ২ = G, ৩ = D, ৪ = A
+// ★ নতুন ধাপ যোগ করতে এই তালিকার শেষে একটা লাইন বসান (keep:1 দিলে টেস্টে ক্রম এলোমেলো হবে না)
+const ST=[
+ {t:'ধাপ ১: খোলা তার',d:'ফ্রেট ০ মানে আঙুল ছাড়া বাজানো। মোটা তার (A) থেকে সরু তার (e) পর্যন্ত একে একে বাজান।',p:[[4,0],[3,0],[2,0],[1,0],[0,0]]},
+ {t:'ধাপ ২: ফ্রেট ও সুর',d:'ডানের ঘরগুলো উঁচু ফ্রেট। যত ডানে, সুর তত চড়া। সবুজ ঘরগুলো ক্রমে বাজান।',p:[[0,1],[0,3],[0,5],[0,7],[1,1],[1,3],[2,2],[3,2]]},
+ {t:'ধাপ ৩: Em কর্ড',d:'Em কর্ড: A ও D তারে ২ ফ্রেট, বাকি তার খোলা। নিচ থেকে ওপরে বাজান।',p:[[4,2],[3,2],[2,0],[1,0],[0,0]]},
+ {t:'ধাপ ৪: Am কর্ড',d:'Am কর্ড: D ও G তারে ২ ফ্রেট, B তারে ১ ফ্রেট।',p:[[4,0],[3,2],[2,2],[1,1],[0,0]]},
+ {t:'ধাপ ৫: Twinkle Twinkle',d:'প্রথম সুর ক্রমানুসারে বাজান: C C G G A A G',p:[[1,1],[1,1],[0,3],[0,3],[0,5],[0,5],[0,3]],keep:1},
+ {t:'ধাপ ৬: G কর্ড',d:'G কর্ড: A তারে ২ ফ্রেট, D-G-B খোলা, সবচেয়ে সরু e তারে ৩ ফ্রেট।',p:[[4,2],[3,0],[2,0],[1,0],[0,3]]},
+ {t:'ধাপ ৭: C কর্ড',d:'C কর্ড: A তারে ৩ ফ্রেট, D তারে ২ ফ্রেট, G খোলা, B তারে ১ ফ্রেট, e খোলা।',p:[[4,3],[3,2],[2,0],[1,1],[0,0]]}
+];
+
+// ================= মোড =================
+let mode='free',si=0,seq=[],i=0,wrong=0,timers=[],SONG=null;
+const msg=$('msg');
+function clearTg(){ Object.values(cells).forEach(c=>c.classList.remove('tg','nx')); }
+function showTg(){ clearTg(); if(mode==='prac'||mode==='song'){ cells[seq[i][0]+'_'+seq[i][1]].classList.add('tg');
+  if(mode==='song'&&seq[i+1]) cells[seq[i+1][0]+'_'+seq[i+1][1]].classList.add('nx'); } }
+function desc(s){ return S[s[0]]+' তার, '+(s[1]?s[1]+' ফ্রেট':'খোলা'); }
+function setMsg(){
+  $('sb').style.display=(mode==='auto'||mode==='song')?'':'none';
+  if(mode==='free') msg.textContent='ফ্রি প্লে: যেকোনো ঘরে ট্যাপ করুন 🎸';
+  if(mode==='prac') msg.textContent='অনুশীলন '+(i+1)+'/'+seq.length+' → '+desc(seq[i])+' ('+nm(seq[i][0],seq[i][1])+')';
+  if(mode==='test') msg.textContent='টেস্ট '+(i+1)+'/'+seq.length+' → বাজান: '+desc(seq[i])+' ('+nm(seq[i][0],seq[i][1])+') | ভুল: '+wrong+'/2';
+  if(mode==='song') msg.textContent='গান '+(i+1)+'/'+seq.length+' → '+desc(seq[i])+' ('+nm(seq[i][0],seq[i][1])+')';
+  if(mode==='auto') msg.textContent='▶ বাজছে... সবুজ ঘর দেখে শিখুন';
+}
+function stopAll(){ timers.forEach(clearTimeout); timers=[]; mode='free'; clearTg(); setMsg(); }
+function startPrac(n){ stopAll(); si=n;mode='prac';seq=ST[n].p;i=0;showTg();setMsg();dlg('<h3>'+ST[n].t+'</h3><p>'+ST[n].d+'</p><div class="row"><button class="t" onclick="closeDlg()">শুরু করুন</button></div>'); }
+function startTest(){ mode='test';wrong=0;i=0;seq=ST[si].keep?ST[si].p.slice():ST[si].p.slice().sort(()=>Math.random()-.5);clearTg();setMsg();dlg('<h3>📝 টেস্ট</h3><p>এবার <b>সবুজ গাইড থাকবে না</b> আর <b>ক্রম এলোমেলো</b> হবে (অনুশীলনের ক্রম নয়)। প্রতিবার ওপরের বারে লেখা তার ও ফ্রেট দেখে সেই ঘর ট্যাপ করুন। ২টির বেশি ভুল করা যাবে না।</p><div class="row"><button class="t" onclick="closeDlg()">বুঝেছি, শুরু</button></div>'); }
+function hit(r,f){
+  pluck(r,f); flash(cells[r+'_'+f],'on');
+  if(mode==='free'||mode==='auto')return;
+  const t=seq[i];
+  if(t[0]===r&&t[1]===f){ flash(cells[r+'_'+f],'ok',250); i++; if(i>=seq.length) return done(); }
+  else { flash(cells[r+'_'+f],'bad',250); if(mode==='test'){ wrong++; if(wrong>2) return fail(); } }
+  showTg(); setMsg();
+}
+function done(){
+  clearTg();
+  if(mode==='song'){ mode='free'; setMsg(); return dlg('<h3>🎉 গান শেষ!</h3><p>পুরো সুর বাজিয়েছেন।</p><div class="row"><button class="t" onclick="songDlg()">আবার</button><button class="t" onclick="closeDlg()">বন্ধ</button></div>'); }
+  if(mode==='prac'){ return dlg('<h3>✅ অনুশীলন শেষ!</h3><p>এবার টেস্ট দিন। গাইড থাকবে না, সর্বোচ্চ ২টি ভুল চলবে।</p><div class="row"><button class="t" onclick="startTest()">টেস্ট শুরু</button><button class="t" onclick="startPrac(si)">আবার অনুশীলন</button></div>'); }
+  const last=si>=ST.length-1;
+  P.unlocked=Math.max(P.unlocked,Math.min(si+1,ST.length)); save(); drawMenu(); mode='free'; setMsg();
+  dlg('<h3>🎉 পাশ!</h3><p>'+(last?'সব ধাপ শেষ! অভিনন্দন!':'পরের ধাপ আনলক হয়েছে।')+'</p><div class="row">'+(last?'':'<button class="t" onclick="startPrac('+(si+1)+')">পরের ধাপ</button>')+'<button class="t" onclick="closeDlg()">ঠিক আছে</button></div>');
+}
+function fail(){ mode='free';clearTg();setMsg();dlg('<h3>❌ ফেল</h3><p>২টির বেশি ভুল হয়েছে। আবার অনুশীলন করে চেষ্টা করুন।</p><div class="row"><button class="t" onclick="startPrac(si)">অনুশীলন</button><button class="t" onclick="closeDlg()">বন্ধ</button></div>'); }
+
+// ================= গান বিশ্লেষণ =================
+function songUpload(){
+  dlg('<h3>🎵 গান আপলোড</h3><p style="font-size:13px">MP3/WAV/M4A দিন (প্রথম ৭৫ সেকেন্ড বিশ্লেষণ হবে)। একক সুর (ভোকাল, সোলো, সহজ গান) হলে সবচেয়ে ভালো ফল আসে। ফোনেই বিশ্লেষণ হয়, ফাইল কোথাও যায় না।</p><input type="file" id="fi" accept="audio/*"><p id="stat" style="font-size:13px"></p><div class="row"><button class="t" onclick="closeDlg()">বন্ধ</button></div>');
+  $('fi').onchange=async e=>{ const f=e.target.files[0]; if(!f)return;
+    try{ SONG=await analyze(f); songDlg(); }catch(err){ $('stat').textContent='বিশ্লেষণ করা গেল না: '+(err.message||err); } };
+}
+const stat=t=>{ const s=$('stat'); if(s)s.textContent=t; };
+const tick=()=>new Promise(r=>setTimeout(r));
+async function analyze(file){
+  initAudio(); stat('ডিকোড হচ্ছে...');
+  const au=await ctx.decodeAudioData(await file.arrayBuffer());
+  const c0=au.getChannelData(0), c1=au.numberOfChannels>1?au.getChannelData(1):null;
+  const fac=Math.max(1,Math.round(au.sampleRate/11025)), sr=au.sampleRate/fac;
+  const len=Math.min(Math.floor(c0.length/fac),Math.floor(sr*75)), x=new Float32Array(len);
+  for(let i=0;i<len;i++){ let s=0; for(let k=0;k<fac;k++){ const j=i*fac+k; s+=c0[j]+(c1?c1[j]:0); } x[i]=s/(fac*(c1?2:1)); }
+  const hop=Math.round(sr*.03), win=Math.round(sr*.07), lo=Math.floor(sr/900), hi=Math.floor(sr/80), dt=hop/sr;
+  const F=Math.floor((len-win)/hop); if(F<10) throw new Error('গান খুব ছোট');
+  const rms=new Float32Array(F), midi=new Int16Array(F);
+  for(let k=0;k<F;k++){ let e=0,o=k*hop; for(let i=0;i<win;i++) e+=x[o+i]*x[o+i]; rms[k]=Math.sqrt(e/win); }
+  let mx=0; for(let k=0;k<F;k++) mx=Math.max(mx,rms[k]);
+  const m2=win-hi;
+  for(let k=0;k<F;k++){
+    if(k%60===0){ stat('সুর খোঁজা হচ্ছে... '+Math.round(k/F*100)+'%'); await tick(); }
+    if(rms[k]<mx*.12) continue;
+    const o=k*hop, rr=[]; let e0=0, best=0, bl=0;
+    for(let i=0;i<m2;i++) e0+=x[o+i]*x[o+i];
+    for(let l=lo;l<=hi;l++){ let s=0,el=0; for(let i=0;i<m2;i++){ s+=x[o+i]*x[o+i+l]; el+=x[o+i+l]*x[o+i+l]; }
+      const r=s/Math.sqrt(e0*el+1e-9); rr[l]=r; if(r>best){best=r;bl=l;} }
+    if(best<.6) continue;
+    for(let l=lo;l<=hi;l++) if(rr[l]>=best*.92&&(l===lo||rr[l]>=rr[l-1])&&(l===hi||rr[l]>=rr[l+1])){ bl=l; break; }
+    midi[k]=Math.round(69+12*Math.log2((sr/bl)/440));
+  }
+  const sm=midi.slice();
+  for(let k=1;k<F-1;k++) sm[k]=[midi[k-1],midi[k],midi[k+1]].sort((a,b)=>a-b)[1];
+  // নোট ভাগ (পিচ বদল বা শব্দের ধাক্কা = নতুন নোট)
+  let raw=[],cur=null;
+  for(let k=0;k<F;k++){
+    const m=sm[k], on=k>0&&rms[k]>rms[k-1]*1.5&&rms[k]>mx*.15;
+    if(cur&&(m!==cur.m||on||!m)){ raw.push(cur); cur=null; }
+    if(!cur&&m) cur={m,s:k*dt,e:(k+1)*dt}; else if(cur) cur.e=(k+1)*dt;
+  }
+  if(cur) raw.push(cur);
+  raw=raw.filter(n=>n.e-n.s>=.08);
+  if(!raw.length) throw new Error('কোনো স্পষ্ট সুর পাওয়া যায়নি');
+  // বিট (BPM)
+  const fl=new Float32Array(F); for(let k=1;k<F;k++) fl[k]=Math.max(0,rms[k]-rms[k-1]);
+  const Lmin=Math.round(60/(180*dt)), Lmax=Math.round(60/(70*dt)); let bs=-1,bL=Lmin;
+  for(let L=Lmin;L<=Lmax;L++){ let s=0; for(let k=0;k+L<F;k++) s+=fl[k]*fl[k+L]; if(s>bs){bs=s;bL=L;} }
+  let bpm=60/(bL*dt); while(bpm<85) bpm*=2; while(bpm>170) bpm/=2; bpm=Math.round(bpm);
+  // বিটে বসানো (আধা-বিট গ্রিড) + বোর্ডে ম্যাপ
+  const g=60/bpm/2, t0=raw[0].s; let pr=0,pf=0,lastT=-1; const out=[];
+  for(const n of raw){
+    const t=Math.round((n.s-t0)/g)*g; if(t===lastT) continue;
+    let m=n.m; while(m>HIGH) m-=12; while(m<LOW) m+=12;
+    let best=null,bc=1e9;
+    for(let r=0;r<ROWS;r++){ const f=m-M[r]; if(f<0||f>=COLS) continue; const c=f+Math.abs(r-pr)*.7+Math.abs(f-pf)*.3; if(c<bc){bc=c;best=[r,f];} }
+    if(!best) continue; pr=best[0]; pf=best[1]; lastT=t; out.push({t,m,r:pr,f:pf});
+    if(out.length>=200) break;
+  }
+  return {name:file.name,bpm,notes:out};
+}
+function songDlg(){
+  if(!SONG) return songUpload();
+  const list=SONG.notes.slice(0,80).map((n,k)=>(k+1)+'. '+NN[n.m%12]+' → '+S[n.r]+' তার, '+(n.f?n.f+' ফ্রেট':'খোলা')).join('<br>');
+  dlg('<h3>🎵 '+esc(SONG.name)+'</h3><p style="font-size:13px">বিট ≈ '+SONG.bpm+' BPM · নোট: '+SONG.notes.length+'</p><div class="row"><button class="t" onclick="playSong(1)">▶ শুনুন</button><button class="t" onclick="playSong(.5)">🐢 ধীরে</button><button class="t" onclick="learnSong()">🎯 শিখুন</button><button class="t" onclick="songUpload()">নতুন গান</button></div><div style="max-height:32dvh;overflow:auto;font-size:13px;margin-top:10px;touch-action:pan-y">'+list+'</div>');
+}
+function playSong(sp){
+  stopAll(); closeDlg(); mode='auto'; setMsg();
+  SONG.notes.forEach((n,k)=>timers.push(setTimeout(()=>{ pluck(n.r,n.f); flash(cells[n.r+'_'+n.f],'tg',Math.max(220,450/sp)); },400+n.t*1000/sp)));
+  const end=SONG.notes[SONG.notes.length-1].t*1000/sp+1500;
+  timers.push(setTimeout(()=>{ mode='free'; setMsg(); },end));
+}
+function learnSong(){ stopAll(); closeDlg(); mode='song'; seq=SONG.notes.map(n=>[n.r,n.f]); i=0; showTg(); setMsg(); }
+
+// ================= UI =================
+function dlg(h){ $('db').innerHTML=h; $('dlg').style.display='flex'; }
+function closeDlg(){ $('dlg').style.display='none'; }
+function drawMenu(){ $('stl').innerHTML=''; ST.forEach((s,n)=>{ const b=document.createElement('button'); const ok=n<=P.unlocked;
+  b.className='st'+(ok?'':' lock'); b.textContent=(ok?(n<P.unlocked?'✅ ':'▶️ '):'🔒 ')+s.t;
+  b.onclick=()=>{ if(!ok)return; $('menu').style.display='none'; startPrac(n); }; $('stl').appendChild(b); }); }
+$('mb').onclick=()=>{ initAudio(); $('menu').style.display='flex'; };
+$('mc').onclick=()=>$('menu').style.display='none';
+$('sb').onclick=stopAll;
+$('free').onclick=()=>{ stopAll(); $('menu').style.display='none'; };
+$('song').onclick=()=>{ $('menu').style.display='none'; SONG?songDlg():songUpload(); };
+$('cfg').onclick=()=>{ $('menu').style.display='none'; dlg('<h3>প্রগ্রেস সিঙ্ক</h3><p style="font-size:13px">Apps Script Web App URL দিন (ঐচ্ছিক)।</p><input id="u" value="'+esc(url)+'" placeholder="https://script.google.com/macros/s/.../exec"><div class="row"><button class="t" onclick="url=document.getElementById(\'u\').value.trim();localStorage.setItem(\'gurl\',url);save();load();closeDlg()">সেভ</button><button class="t" onclick="closeDlg()">বাতিল</button></div>'); };
+document.addEventListener('touchmove',e=>{ if(!e.target.closest('.box'))e.preventDefault(); },{passive:false});
+document.addEventListener('pointerdown',initAudio,{once:true});
+
+// ইনস্টল (PWA)
+let dp; addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); dp=e; $('inst').style.display='block'; });
+$('inst').onclick=()=>{ if(dp){ dp.prompt(); dp=null; $('inst').style.display='none'; } };
+if('serviceWorker' in navigator) navigator.serviceWorker.register('app-sw.js').catch(()=>{});
+
+// থিম (ডার্ক / লাইট)
+function setTheme(t){ document.documentElement.dataset.theme=t; localStorage.setItem('gth',t);
+  $('tb').textContent=t==='dark'?'☀️':'🌙'; $('tc').content=t==='dark'?'#2a1b0d':'#eadfc6'; }
+$('tb').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+setTheme(localStorage.getItem('gth')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));
+
+setMsg(); drawMenu(); load();
+</script>
+</body>
+</html>
